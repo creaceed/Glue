@@ -48,6 +48,7 @@ def main(argv):
 	# Status
 	help = 'Print status for each dependency.'
 	subparser = subparsers.add_parser(COMMAND_STATUS, help=help)
+	subparser.add_argument('-r', '--remote', dest='remote', action='store_true', help='Provides remote status, ie, number of incoming & outgoing changes.')
 
 	# Advance
 	help = 'Advances passed dependencies to their current branch head. Switching branches must be done manually through versioning scheme.'
@@ -94,11 +95,23 @@ def main(argv):
 				print("\t%s" % dep)
 		elif args.command == COMMAND_STATUS:
 			logging.debug("get dependency status")
+			print("Fetching…")
+			if args.remote:
+				for dep in project.dependencies:
+					dep.fetch()
+					sys.stdout.write(dep.name + " ")
+					sys.stdout.flush()
+				
 			for dep in project.dependencies:
 				uncommitted = dep.hasUncommittedChanges()
+				remoteStatus = ""
+				if args.remote:
+					s = dep.getRemoteChanges()
+					if s[0] > 0 or s[1] > 0:
+						remoteStatus = "%d"%s[0] + style.cyan("↑")+ " %d"%s[1] + style.cyan("↓")
 				# rev = 'uncommitted' if uncommitted else dep.getRevision()
 				print("%s (at %s/, type=%s):" % (style.dependency(dep.name), dep.path, dep.type))
-				print("\tstatus: %s" % ( style.error('uncommitted') if uncommitted else style.ok('clean') ))
+				print("\tstatus: %s %s" % ( style.error('uncommitted') if uncommitted else style.ok('clean') , remoteStatus))
 				print("\tcurrent branch: %s" % (style.branch(dep.getCurrentBranch())))
 				print("\trevision: %s" % (style.revision(dep.getRevision())))
 		elif args.command == COMMAND_ADVANCE:
@@ -134,7 +147,7 @@ def main(argv):
 			# project.failIfUncommittedDependencies()
 			interface = project.interface()
 			dirty = project.hasUncommittedDependencies()
-			suffix = ".0" if dirty else ""
+			suffix = ".1" if dirty else ""
 			buildversion = interface.getBuildNumberString()+suffix
 
 			# print("Build version: %s" % interface.getBuildNumberString())

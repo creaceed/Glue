@@ -28,6 +28,8 @@ def bold(text):
 
 def red(text):
 	return tagged(text, Style.RED)
+def cyan(text):
+	return tagged(text, Style.CYAN)
 
 def ok(text):
 	return tagged(text, Style.DARK_GREEN)

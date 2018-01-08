@@ -30,7 +30,11 @@ class VersioningSystemInterface:
 			raise StandardError(error)
 
 		return out
+	def fetch(self):
+		raise NotImplementedError
 	def hasUncommittedChanges(self):
+		raise NotImplementedError
+	def getRemoteChanges(self):
 		raise NotImplementedError
 	def getRevisionCount(self):
 		raise NotImplementedError
@@ -54,14 +58,23 @@ class GitInterface(VersioningSystemInterface):
 	def __init__(self, path, url):
 		VersioningSystemInterface.__init__(self, path, url)
 		self.executable = GIT_BINARY
+	def fetch(self):
+		self.executeCommand("fetch")
 	def hasUncommittedChanges(self):
 		out = self.executeCommand("status -s")
 		lines = str.splitlines(out)
 		return len(lines) > 0
+	def getRemoteChanges(self):
+		up = self.getRevisionCountRange(range="@{u}..")
+		down = self.getRevisionCountRange(range="..@{u}")
+		return (up,down)
 	def getRevision(self):
 		return self.executeCommand("log --pretty=format:'%H' -n 1")
+	def getRevisionCountRange(self, range): 
+		val = self.executeCommand("rev-list --count %s" % range)
+		return int(val) if val != '' else 0
 	def getRevisionCount(self): 
-		return int(self.executeCommand("rev-list --count HEAD"))
+		return self.getRevisionCountRange(range="HEAD")
 	def getDate(self):
 		return self.executeCommand("log --pretty=format:'%ci' -n 1")
 	def getCurrentBranch(self):
@@ -81,6 +94,8 @@ class MercurialInterface(VersioningSystemInterface):
 		out = self.executeCommand("status")
 		lines = str.splitlines(out)
 		return len(lines) > 0
+	# def getRemoteChanges(self):
+	# 	return (0,0)
 	def getRevision(self):
 		return self.executeCommand("parent --template '{node}'")
 	def getRevisionCount(self): 

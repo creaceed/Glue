@@ -100,6 +100,10 @@ class Project:
 				raiseError("Missing state for dependency %s" % (dep.name))
 			dep.update(state)
 
+	def fetchDependencies(self):
+		for dep in self.dependencies:
+			dep.fetch()
+
 	def hasUncommittedDependencies(self):
 		for dep in self.dependencies:
 			# logging.debug("dep<%s>: uncommitted=%s" % (dep.name, dep.hasUncommittedChanges()))

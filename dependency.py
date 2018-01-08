@@ -42,8 +42,12 @@ class Dependency:
 		self.interface = interface
 	def __repr__(self):
 		return '%s: path="%s" type=%s url="%s"' % (self.name, self.path, self.type, self.url)
+	def fetch(self):
+		self.interface.fetch()
 	def hasUncommittedChanges(self):
 		return self.interface.hasUncommittedChanges()
+	def getRemoteChanges(self):
+		return self.interface.getRemoteChanges()
 	def getRevision(self):
 		return self.interface.getRevision()
 	def getCurrentBranch(self):
