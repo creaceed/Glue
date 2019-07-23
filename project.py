@@ -39,6 +39,11 @@ class Project:
 		if len(uncommittedDeps) > 0:
 			raiseError("Aborting. The following dependencies have uncommitted changes:\n\t%s" % 
 			", ".join(dep.name for dep in uncommittedDeps))
+	def failIfMissingDependencies(self):
+		missing = self.missingDependencies()
+		if len(missing) > 0:
+			raiseError("Aborting. The following dependencies are not valid repositories:\n\t%s" % 
+			", ".join(dep.name for dep in missing))
 	def getStates(self):
 		self.failIfUncommittedDependencies()
 		states = {}
@@ -112,3 +117,5 @@ class Project:
 		return False
 	def uncommittedDependencies(self):
 		return [dep for dep in self.dependencies if dep.hasUncommittedChanges()]
+	def missingDependencies(self):
+		return [dep for dep in self.dependencies if dep.interface.exists() == False]

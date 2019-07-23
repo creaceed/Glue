@@ -30,6 +30,8 @@ class VersioningSystemInterface:
 			raise StandardError(error)
 
 		return out
+	def exists(self):
+		raise NotImplementedError
 	def fetch(self):
 		raise NotImplementedError
 	def hasUncommittedChanges(self):
@@ -58,6 +60,8 @@ class GitInterface(VersioningSystemInterface):
 	def __init__(self, path, url):
 		VersioningSystemInterface.__init__(self, path, url)
 		self.executable = GIT_BINARY
+	def exists(self):
+		return os.path.isdir(os.path.join(self.path, ".git"))
 	def fetch(self):
 		self.executeCommand("fetch")
 	def hasUncommittedChanges(self):
@@ -90,6 +94,8 @@ class MercurialInterface(VersioningSystemInterface):
 		self.executable = HG_BINARY
 		# self.getRevisionCount()
 		# print("rev count: %d" % self.getRevisionCount())
+	def exists(self):
+		return os.path.isdir(os.path.join(self.path, ".hg"))
 	def hasUncommittedChanges(self):
 		out = self.executeCommand("status")
 		lines = str.splitlines(out)

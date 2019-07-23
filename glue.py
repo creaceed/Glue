@@ -95,6 +95,7 @@ def main(argv):
 				print("\t%s" % dep)
 		elif args.command == COMMAND_STATUS:
 			logging.debug("get dependency status")
+			project.failIfMissingDependencies()
 			print("Fetching…")
 			if args.remote:
 				for dep in project.dependencies:
@@ -116,12 +117,15 @@ def main(argv):
 				print("\trevision: %s" % (style.revision(dep.getRevision())))
 		elif args.command == COMMAND_ADVANCE:
 			logging.debug("advancing deps: %s" % ", ".join(args.deps))
+			project.failIfMissingDependencies()
 		elif args.command == COMMAND_RECORD:
 			logging.debug("recording revisions for dependencies")
+			project.failIfMissingDependencies()
 			project.recordDepsStates()
 		elif args.command == COMMAND_UPDATE:
 			logging.debug("updating dependencies (clean: %d)" % (args.clean))
 			# update main project if requested (and its states file)
+			project.failIfMissingDependencies()
 			project.failIfUncommittedDependencies()
 
 			# read states
@@ -133,6 +137,7 @@ def main(argv):
 		elif args.command == COMMAND_CHECK:
 			logging.debug("checking deps")
 			# project.failIfUncommittedDependencies()
+			project.failIfMissingDependencies()
 			uncommittedDeps = project.uncommittedDependencies()
 			if uncommittedDeps: # python's way to test not empty
 				uncString = ", ".join(dep.name for dep in uncommittedDeps)
@@ -144,6 +149,7 @@ def main(argv):
 					print("All dependencies are committed")
 		elif args.command == COMMAND_BUILDVERSION:
 			logging.debug("generate build version")
+			project.failIfMissingDependencies()
 			# project.failIfUncommittedDependencies()
 			interface = project.interface()
 			dirty = project.hasUncommittedDependencies()
