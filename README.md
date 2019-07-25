@@ -2,6 +2,8 @@
 
 Glue is a Python script that lets you tie together a number of dependencies that are part of a main project. Glue makes it possible to define repository-based dependencies, to record/track their version at specific moments in the lifetime of the project, and to produce a build number suitable for app distribution (monotonically increasing). Glue's loose coupling approach makes it easy to setup and deploy, even in unusual project configurations.
 
+<p align="center"><img src="https://user-images.githubusercontent.com/369828/61873112-65ca2080-aee5-11e9-885b-2fd8e6c62721.jpg" width="75%"></p>
+
 ## Motivation
 
 As app developers, we often make use of libraries to build an app. These libraries can be in house or third party, and are typically published as repositories. Being able to build an exact version of an app that previously shipped is important to inspect, reproduce and hopefully fix specific issues. Or just to keep track of releases. Other dependency tracking solutions exist, either from git itself with git submodule, git subtree, or git subrepo, or by using package manager such as Carthage, CocoaPods, or more recently, [Swift Package Manager](https://swift.org/package-manager/). These tools can serve great purpose within their own constraints, but it's not always practical to deploy them in all circumstances. 
@@ -15,7 +17,7 @@ We wanted a tool that was loosely coupled, simple to handle, and with enough fle
 Glue is one-level deep, it is *not* a recusrive system. The main project is simply called the *project* and the subprojects it depends upon are called the *dependencies*. Dependencies are defined (by the developer) in the *.gluedeps* file at the project root, and dependencies versions & metadata are recorded (by invoking glue) alongside in the *.gluestates* file. Both files typically are manually committed as part of the project. And yes, they are HJSON ([Human JSON](https://hjson.org), so, comma not needed, and comments welcome!)
 
 Example **.gluedeps** file that defines dependencies of the project:
-```json
+```
 dep1: {
 	path: "relative/path/to/dep1" # can be a symlink
 	type: git
@@ -31,7 +33,7 @@ dep2: {
 ```
 
 Example of generated **.gluestates** file when recording current state of dependencies:
-```json
+```
 dep1: {
 	branch: master
 	date: 2019-06-25 18:10:48 +0200
