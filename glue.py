@@ -24,7 +24,7 @@ def prepareLogger(level=logging.DEBUG):
 	#	logging.debug('A debug message!')
 	#	logging.info('We processed records')
 def main(argv):
-	prepareLogger(logging.DEBUG)
+	prepareLogger(logging.WARN)
 	logging.debug("args = %s", ", ".join(argv))
 
 	# parser = argparse.ArgumentParser(description='Glue: Automating dependent repositories operations.')
@@ -96,13 +96,14 @@ def main(argv):
 		elif args.command == COMMAND_STATUS:
 			logging.debug("get dependency status")
 			project.failIfMissingDependencies()
-			print("Fetching…")
 			if args.remote:
+				print("Fetching…")
 				for dep in project.dependencies:
 					dep.fetch()
 					sys.stdout.write(dep.name + " ")
 					sys.stdout.flush()
-				
+				sys.stdout.write("\n")
+
 			for dep in project.dependencies:
 				uncommitted = dep.hasUncommittedChanges()
 				remoteStatus = ""
