@@ -1,6 +1,12 @@
 # Glue
 
-Glue is a Python script that lets you tie together a number of dependencies that are part of a main project. Glue makes it possible to define repository-based dependencies, to record/track their version at specific moments in the lifetime of the project, and to produce a build number suitable for app distribution (monotonically increasing). Glue's loose coupling approach makes it easy to setup and deploy, even in unusual project configurations.
+Glue is a command-line tool to tie together a number of dependencies that are part of a main project. It makes it possible to define repository-based dependencies, to record/track their version at specific moments in the lifetime of the project, and to produce a build number suitable for app distribution (monotonically increasing). Glue's loose coupling approach makes it easy to setup and deploy, even in unusual project configurations.
+
+You'd typically use Glue when creating an app (the project) that makes use of a number of reusable libraries (the dependencies), but it's certainly not limited to apps. The dependencies should be located relatively to the project root, and have their own repository by themselves. Setting up Glue for the project will let you store dependencies versions when you commit the project itself, effectively establishing a "versioning" link: project commit *ABC* references dependency commit *DEF*.
+
+Lastly, Glue can be invoked as part of the build (through an Xcode script phase, or other build system) when publishing a release. This lets you automate dependency recording, as well as feeding Glue's associated build version directly into the built target.
+
+Glue itself is written in Python, but it is meant to work with any project, in any language.
 
 <p align="center"><img src="https://user-images.githubusercontent.com/369828/61873112-65ca2080-aee5-11e9-885b-2fd8e6c62721.jpg" width="75%"></p>
 
