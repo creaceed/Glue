@@ -53,7 +53,7 @@ class VersioningSystemInterface:
 			logging.error("Error %d while executing command '%s'" % (ret, " ".join(sargs)))
 			raise StandardError(error)
 
-		return out
+		return out.decode()
 	def exists(self):
 		raise NotImplementedError
 	def fetch(self):

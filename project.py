@@ -106,7 +106,7 @@ class Project:
 		return states
 
 	def loadDeps(self):
-		dicts = hjson.load(file(self.gluedepsPath()))
+		dicts = hjson.load(open(self.gluedepsPath()))
 		deps = []
 
 		# logging.debug("loaded deps file: %s" % deps)
